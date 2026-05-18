@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Login from '../pages/login';
 import Register from '../pages/register';
 import Dashboard from '../pages/dashboard';
@@ -13,7 +13,7 @@ function AppContent() {
       {!hideNavbar && <Navbar />}
       <main className="container mx-auto px-4 py-8">
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />

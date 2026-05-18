@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { apiRequest } from '../src/api';
+import axios from 'axios';
 import { 
   LuMail as Mail, 
   LuLock as Lock, 
@@ -32,13 +32,10 @@ const Register = () => {
     setError('');
     
     try {
-      await apiRequest('/api/auth/register', {
-        method: 'POST',
-        body: JSON.stringify(formData),
-      });
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/register`, formData);
       navigate('/login');
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message || error.message);
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +148,7 @@ const Register = () => {
               <span className="relative z-10 flex items-center gap-2">
                 {isLoading ? 'PROVISIONING...' : 'PROVISION_ACCOUNT'} {!isLoading && <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />}
               </span>
-              {!isLoading && <div className="absolute inset-0 -z-0 bg-gradient-to-r from-neon-green to-tech-blue opacity-0 group-hover:opacity-100 transition-opacity" />}
+              {!isLoading && <div className="absolute inset-0 z-0 bg-linear-to-r from-neon-green to-tech-blue opacity-0 group-hover:opacity-100 transition-opacity" />}
             </button>
           </form>
 

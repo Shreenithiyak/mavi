@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { apiRequest, setSession } from '../src/api';
+import { setSession } from '../src/api';
+import axios from 'axios';
 import { 
   LuMail as Mail, 
   LuLock as Lock, 
@@ -13,10 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({email: '',password: '', });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,14 +26,11 @@ const Login = () => {
     setError('');
     
     try {
-      const data = await apiRequest('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify(formData),
-      });
-      setSession(data);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, formData);
+      setSession(response.data);
       navigate('/dashboard');
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message || error.message);
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +110,7 @@ const Login = () => {
               <span className="relative z-10 flex items-center gap-2">
                 {isLoading ? 'PROCESSING...' : 'INIT_SESSION'} {!isLoading && <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />}
               </span>
-              {!isLoading && <div className="absolute inset-0 -z-0 bg-gradient-to-r from-neon-green to-tech-blue opacity-0 group-hover:opacity-100 transition-opacity" />}
+              {!isLoading && <div className="absolute inset-0 z-0 bg-linear-to-r from-neon-green to-tech-blue opacity-0 group-hover:opacity-100 transition-opacity" />}
             </button>
           </form>
 
