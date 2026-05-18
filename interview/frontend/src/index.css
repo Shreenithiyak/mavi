@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void-navy: #02060C;
+  --color-neon-green: #42E695;
+  --color-tech-blue: #2E7CF6;
+  --color-tech-blue-end: #00C6FF;
+}
