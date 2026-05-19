@@ -1,32 +1,57 @@
+import { useState, useEffect } from "react";
+import { supabase } from "../supabase/supabaseClient";
+
 const SummaryModal = ({ open, onClose }) => {
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
 
-  if (!open) return null;
+    useEffect(() => {
+        if (open) {
+            const fetchTotal = async () => {
+                setLoading(true);
+                const { data, error } = await supabase
+                    .from("expenses")
+                    .select("amount");
 
-  return (
+                if (error) {
+                    console.error(error);
+                }
 
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex justify-center items-center z-50 transition-opacity">
+                if (data) {
+                    const sum = data.reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+                    setTotal(sum);
+                }
+                setLoading(false);
+            };
 
-      <div className="bg-slate-900 border border-white/10 p-8 rounded-3xl w-[350px] shadow-2xl transform transition-transform">
+            fetchTotal();
+        }
+    }, [open]);
 
-        <h2 className="text-2xl font-bold mb-4 text-slate-100">
-          Expenses Summary
-        </h2>
+    if (!open) return null;
 
-        <p className="text-slate-400 mb-8 text-lg">
-          Total Expenses: <span className="text-indigo-400 font-bold text-2xl">₹5000</span>
-        </p>
+    return (
 
-        <button
-          onClick={onClose}
-          className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition-colors"
-        >
-          Close
-        </button>
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex justify-center items-center z-50 transition-opacity">
 
-      </div>
+            <div className="bg-slate-900 border border-white/10 p-8 rounded-3xl w-[350px] shadow-2xl transform transition-transform">
 
-    </div>
-  );
+                <h2 className="text-2xl font-bold mb-4 text-slate-100">
+                    Expenses Summary
+                </h2>
+
+                <p className="text-slate-400 mb-8 text-lg">
+                    Total Expenses: <span className="text-indigo-400 font-bold text-2xl">{loading ? "..." : `₹${total}`}</span>
+                </p>
+
+                <button onClick={onClose} className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition-colors" >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+    );
 };
 
 export default SummaryModal;
