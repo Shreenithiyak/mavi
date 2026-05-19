@@ -11,7 +11,7 @@ const Profile = () => {
                 .from("profiles")
                 .select("*")
                 .limit(1)
-                .single();
+                .maybeSingle();
 
             if (data) {
                 setProfile(data);
